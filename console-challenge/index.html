@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Console Challenge</title>
+</head>
+<body>
+  <h2 style="font-family:sans-serif; text-align:center; margin-top:40px;">
+    🖥️ Console Challenge — Open DevTools (F12) to see output!
+  </h2>
+
+  <script>
+
+    // ════════════════════════════════════════
+    //   CALCULATOR OPERATIONS
+    // ════════════════════════════════════════
+
+    // ── 1. Basic Calculator Function ──
+    function calculate(a, operator, b) {
+      let result
+
+      if (operator === '+') {
+        result = a + b
+      } else if (operator === '-') {
+        result = a - b
+      } else if (operator === '*') {
+        result = a * b
+      } else if (operator === '/') {
+        if (b === 0) {
+          return 'Error: Division by zero is not allowed!'
+        }
+        result = a / b
+      } else if (operator === '%') {
+        result = a % b
+      } else if (operator === '**') {
+        result = a ** b
+      } else {
+        return 'Error: Unknown operator!'
+      }
+
+      return result
+    }
+
+
+    // ── 2. Addition ──
+    function add(a, b) {
+      return a + b
+    }
+
+
+    // ── 3. Subtraction ──
+    function subtract(a, b) {
+      return a - b
+    }
+
+
+    // ── 4. Multiplication ──
+    function multiply(a, b) {
+      return a * b
+    }
+
+
+    // ── 5. Division ──
+    function divide(a, b) {
+      if (b === 0) return 'Error: Cannot divide by zero!'
+      return a / b
+    }
+
+
+    // ── 6. Modulus (Remainder) ──
+    function modulus(a, b) {
+      return a % b
+    }
+
+
+    // ── 7. Power (Exponentiation) ──
+    function power(a, b) {
+      return a ** b
+    }
+
+
+    // ── 8. Square Root ──
+    function squareRoot(a) {
+      if (a < 0) return 'Error: Cannot find square root of a negative number!'
+      return Math.sqrt(a)
+    }
+
+
+    // ── 9. Absolute Value ──
+    function absolute(a) {
+      return Math.abs(a)
+    }
+
+
+    // ── 10. Percentage ──
+    function percentage(value, total) {
+      return ((value / total) * 100).toFixed(2) + '%'
+    }
+
+
+    // ════════════════════════════════════════
+    //   CONSOLE OUTPUT — All Operations
+    // ════════════════════════════════════════
+
+    console.log('═══════════════════════════════════')
+    console.log('   🖩  CALCULATOR OPERATIONS')
+    console.log('═══════════════════════════════════')
+
+    // Basic Calculator
+    console.log('\n📌 Basic Calculator Function:')
+    console.log('calculate(10, "+", 5)  =', calculate(10, '+', 5))
+    console.log('calculate(10, "-", 5)  =', calculate(10, '-', 5))
+    console.log('calculate(10, "*", 5)  =', calculate(10, '*', 5))
+    console.log('calculate(10, "/", 5)  =', calculate(10, '/', 5))
+    console.log('calculate(10, "%", 3)  =', calculate(10, '%', 3))
+    console.log('calculate(2,  "**", 8) =', calculate(2, '**', 8))
+    console.log('calculate(10, "/", 0)  =', calculate(10, '/', 0))
+
+    // Individual Operations
+    console.log('\n📌 Individual Functions:')
+    console.log('add(25, 15)           =', add(25, 15))
+    console.log('subtract(50, 18)      =', subtract(50, 18))
+    console.log('multiply(7, 8)        =', multiply(7, 8))
+    console.log('divide(100, 4)        =', divide(100, 4))
+    console.log('divide(10, 0)         =', divide(10, 0))
+    console.log('modulus(17, 5)        =', modulus(17, 5))
+    console.log('power(3, 4)           =', power(3, 4))
+    console.log('squareRoot(144)       =', squareRoot(144))
+    console.log('squareRoot(-9)        =', squareRoot(-9))
+    console.log('absolute(-42)         =', absolute(-42))
+    console.log('percentage(45, 200)   =', percentage(45, 200))
+
+    // Loop Example — Multiplication Table
+    console.log('\n📌 Multiplication Table of 7 (using a loop):')
+    for (let i = 1; i <= 10; i++) {
+      console.log(`7 × ${i} = ${multiply(7, i)}`)
+    }
+
+    // Array of operations
+    console.log('\n📌 Running Multiple Operations with an Array:')
+    const operations = [
+      { a: 100, op: '+',  b: 250 },
+      { a: 500, op: '-',  b: 175 },
+      { a: 12,  op: '*',  b: 15  },
+      { a: 200, op: '/',  b: 8   },
+      { a: 99,  op: '%',  b: 10  },
+      { a: 5,   op: '**', b: 3   },
+    ]
+
+    operations.forEach(({ a, op, b }) => {
+      console.log(`${a} ${op} ${b} = ${calculate(a, op, b)}`)
+    })
+
+    console.log('\n═══════════════════════════════════')
+    console.log('   ✅  All operations complete!')
+    console.log('═══════════════════════════════════')
+
+  </script>
+</body>
+</html>

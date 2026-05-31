@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LaunchPad — Build Faster</title>
+  <style>
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:   #667eea;
+      --secondary: #764ba2;
+      --dark:      #1a1a2e;
+      --gray:      #f4f6fb;
+      --text:      #555;
+      --white:     #ffffff;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--dark), #0f3460);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 40px 80px;
+    }
+
+    .hero-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 60px;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .hero-text { flex: 1; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(102,126,234,0.2);
+      border: 1px solid rgba(102,126,234,0.4);
+      color: #a8b8f8;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 30px;
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      font-size: 56px;
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--primary), #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 18px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 480px;
+    }
+
+    /* ── CTA Buttons ── */
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      padding: 15px 32px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+    }
+
+    .btn-outline {
+      padding: 15px 32px;
+      background: transparent;
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    /* ── Hero Visual ── */
+    .hero-visual { flex: 0 0 420px; }
+
+    .dashboard-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 28px;
+      backdrop-filter: blur(16px);
+    }
+
+    .dash-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .dash-dots { display: flex; gap: 6px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red    { background: #ff5f57; }
+    .dot-yellow { background: #febc2e; }
+    .dot-green  { background: #28c840; }
+
+    .dash-title {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      font-weight: 600;
+    }
+
+    .dash-metrics {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .metric {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--white);
+      display: block;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+
+    .dash-bar-group { display: flex; flex-direction: column; gap: 12px; }
+
+    .dash-bar-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 6px;
+    }
+
+    .dash-bar-bg {
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .dash-bar-fill { height: 100%; border-radius: 10px; }
+
+    /* ── Features ── */
+    .features {
+      padding: 100px 40px;
+      background: var(--white);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1));
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 18px;
+      border-radius: 30px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-size: 38px;
+      font-weight: 900;
+      color: var(--dark);
+      margin-bottom: 14px;
+    }
+
+    .section-subtitle {
+      font-size: 17px;
+      color: var(--text);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .features-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      max-width: 1100px;
+      margin: 0 auto;
+      justify-content: center;
+    }
+
+    .feature-card {
+      flex: 1 1 280px;
+      max-width: 340px;
+      background: var(--gray);
+      border-radius: 20px;
+      padding: 36px 30px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+    }
+
+    .feature-icon { font-size: 40px; margin-bottom: 20px; display: block; }
+    .feature-title { font-size: 19px; font-weight: 800; color: var(--dark); margin-bottom: 10px; }
+    .feature-desc  { font-size: 14px; color: var(--text); line-height: 1.7; }
+
+    /* ── Testimonials ── */
+    .testimonials {
+      padding: 100px 40px;
+      background: #f8f9ff;
+    }
+
+    .testimonials-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      justify-content: center;
+    }
+
+    .testimonial-card {
+      flex: 1 1 280px;
+      max-width: 360px;
+      background: var(--white);
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      transition: transform 0.2s;
+      position: relative;
+    }
+
+    .testimonial-card:hover { transform: translateY(-4px); }
+
+    .quote-icon {
+      font-size: 40px;
+      color: var(--primary);
+      opacity: 0.2;
+      position: absolute;
+      top: 20px; right: 24px;
+    }
+
+    .stars { color: #f1c40f; font-size: 16px; margin-bottom: 16px; }
+
+    .testimonial-text {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.75;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    .testimonial-author { display: flex; align-items: center; gap: 14px; }
+
+    .author-avatar {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+
+    .author-name { font-size: 14px; font-weight: 700; color: var(--dark); }
+    .author-role { font-size: 12px; color: #aaa; margin-top: 2px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .hero-inner    { flex-direction: column; text-align: center; gap: 48px; }
+      .hero-title    { font-size: 40px; }
+      .hero-desc     { margin: 0 auto 36px; }
+      .hero-btns     { justify-content: center; }
+      .hero-visual   { flex: 0 0 auto; width: 100%; max-width: 420px; }
+      .section-title { font-size: 30px; }
+    }
+
+    @media (max-width: 600px) {
+      .hero-content  { padding: 100px 24px 60px; }
+      .hero-title    { font-size: 32px; }
+      .hero-desc     { font-size: 15px; }
+      .btn-primary,
+      .btn-outline   { width: 100%; text-align: center; }
+      .hero-btns     { flex-direction: column; }
+      .features,
+      .testimonials  { padding: 70px 20px; }
+      .section-title { font-size: 26px; }
+      .feature-card,
+      .testimonial-card { flex: 1 1 100%; max-width: 100%; }
+      .dash-metrics  { flex-direction: column; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-inner">
+
+        <div class="hero-text">
+          <div class="hero-badge">🚀 Now in Public Beta</div>
+          <h1 class="hero-title">Build Products<br/><span>10× Faster</span></h1>
+          <p class="hero-desc">
+            LaunchPad is the all-in-one platform that helps startups
+            ship faster, scale smarter, and grow bigger — without the chaos.
+          </p>
+          <div class="hero-btns">
+            <a href="#features" class="btn-primary">Get Started Free →</a>
+            <a href="#testimonials" class="btn-outline">See How It Works</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="dashboard-card">
+            <div class="dash-header">
+              <div class="dash-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <span class="dash-title">Dashboard Overview</span>
+            </div>
+            <div class="dash-metrics">
+              <div class="metric">
+                <span class="metric-value">$48K</span>
+                <span class="metric-label">Revenue</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">2.4K</span>
+                <span class="metric-label">Users</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">94%</span>
+                <span class="metric-label">Retention</span>
+              </div>
+            </div>
+            <div class="dash-bar-group">
+              <div>
+                <div class="dash-bar-top"><span>Marketing</span><span>82%</span></div>
+                <div class="dash-bar-bg"><div class="dash-bar-fill" style="width:82%;background:linear-gradient(90deg,#667eea,#764ba2)"></div></div>
+              </div>
+              <div>
+                <div class="dash-bar-top"><span>Development</span><span>67%</span></div>
+                <div class="dash-bar-bg"><div class="dash-bar-fill" style="width:67%;background:linear-gradient(90deg,#2ecc71,#27ae60)"></div></div>
+              </div>
+              <div>
+                <div class="dash-bar-top"><span>Design</span><span>91%</span></div>
+                <div class="dash-bar-bg"><div class="dash-bar-fill" style="width:91%;background:linear-gradient(90deg,#f39c12,#e67e22)"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="section-header">
+      <span class="section-tag">✨ Features</span>
+      <h2 class="section-title">Everything You Need to Launch</h2>
+      <p class="section-subtitle">From idea to production — every tool your startup needs.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3 class="feature-title">Blazing Fast Setup</h3>
+        <p class="feature-desc">Get your project running in minutes with pre-built templates and one-click deployments.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <h3 class="feature-title">Real-Time Analytics</h3>
+        <p class="feature-desc">Live dashboards, custom reports, and smart alerts keep you always in the know.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔒</span>
+        <h3 class="feature-title">Enterprise Security</h3>
+        <p class="feature-desc">Bank-level encryption and automatic backups keep your data safe at all times.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials" id="testimonials">
+    <div class="section-header">
+      <span class="section-tag">💬 Testimonials</span>
+      <h2 class="section-title">Loved by Founders Worldwide</h2>
+      <p class="section-subtitle">Here's what our customers have to say about LaunchPad.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <span class="quote-icon">"</span>
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"LaunchPad completely transformed how we ship features. We went from 2-week cycles to deploying every single day."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">👨‍💻</div>
+          <div>
+            <div class="author-name">Arjun Mehta</div>
+            <div class="author-role">CTO, DevFlow Inc.</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <span class="quote-icon">"</span>
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"The analytics alone are worth the price. Our retention went up 40% in just one month!"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">👩‍🚀</div>
+          <div>
+            <div class="author-name">Priya Sharma</div>
+            <div class="author-role">Founder, GrowthLab</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Manager</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      min-height: 100vh;
+      padding: 36px 20px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+      color: #fff;
+    }
+
+    .header h1 { font-size: 32px; font-weight: 800; }
+    .header p  { font-size: 14px; opacity: 0.8; margin-top: 6px; }
+
+    /* ── Stats Row ── */
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: 140px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      color: #fff;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-value { font-size: 28px; font-weight: 800; display: block; }
+    .stat-label { font-size: 12px; opacity: 0.8; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ── Add Student Form ── */
+    .form-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+
+    .form-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    input {
+      padding: 10px 12px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+      font-family: inherit;
+    }
+
+    input:focus { border-color: #667eea; }
+    input.error { border-color: #e74c3c; background: #fff8f8; }
+
+    .error-msg { font-size: 11px; color: #e74c3c; margin-top: 2px; }
+
+    .add-btn {
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .add-btn:hover { opacity: 0.9; }
+
+    /* ── Table Card ── */
+    .table-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .table-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    .search-input {
+      padding: 8px 14px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      width: 200px;
+    }
+
+    .search-input:focus { border-color: #667eea; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f8f9fb;
+    }
+
+    th {
+      padding: 12px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: left;
+    }
+
+    td {
+      padding: 14px 18px;
+      font-size: 14px;
+      color: #333;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    tr:hover { background: #fafafa; }
+
+    /* ── Top Performer ── */
+    .top-row {
+      background: linear-gradient(90deg, #fff9e6, #fef3cd) !important;
+    }
+
+    .top-badge {
+      display: inline-block;
+      background: #f1c40f;
+      color: #7d6608;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 8px;
+    }
+
+    /* ── Grade Badge ── */
+    .grade {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .grade-a  { background: #eafaf1; color: #2ecc71; }
+    .grade-b  { background: #eaf4fb; color: #3498db; }
+    .grade-c  { background: #fef9e7; color: #f39c12; }
+    .grade-d  { background: #fef5ec; color: #e67e22; }
+    .grade-f  { background: #fdedec; color: #e74c3c; }
+
+    /* ── Average Bar ── */
+    .avg-bar-bg {
+      background: #f0f2f5;
+      border-radius: 10px;
+      height: 8px;
+      width: 100px;
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    .avg-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.3s;
+    }
+
+    /* ── Action Buttons ── */
+    .action-btns { display: flex; gap: 8px; }
+
+    .edit-btn, .save-btn, .cancel-btn, .delete-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .edit-btn   { background: #eaf4fb; color: #3498db; }
+    .save-btn   { background: #eafaf1; color: #2ecc71; }
+    .cancel-btn { background: #f0f2f5; color: #888; }
+    .delete-btn { background: #fdedec; color: #e74c3c; }
+
+    .edit-input {
+      width: 60px;
+      padding: 4px 8px;
+      border: 1.5px solid #667eea;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      text-align: center;
+    }
+
+    /* ── Empty State ── */
+    .empty-state {
+      text-align: center;
+      padding: 50px;
+      color: #bbb;
+    }
+
+    .empty-state span { font-size: 48px; display: block; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🎓 Student Manager</h1>
+    <p>Track students, marks, and performance</p>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-value" id="statTotal">0</span>
+      <span class="stat-label">Total Students</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value" id="statAvg">—</span>
+      <span class="stat-label">Class Average</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value" id="statTop">—</span>
+      <span class="stat-label">Top Performer</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value" id="statPass">0</span>
+      <span class="stat-label">Passing Students</span>
+    </div>
+  </div>
+
+  <!-- Add Student Form -->
+  <div class="form-card">
+    <p class="form-title">➕ Add New Student</p>
+    <div class="form-grid">
+      <div class="field-group">
+        <label>Student Name</label>
+        <input type="text" id="inputName" placeholder="e.g. Rahul Sharma" />
+        <span class="error-msg" id="errName"></span>
+      </div>
+      <div class="field-group">
+        <label>Maths (0–100)</label>
+        <input type="number" id="inputMaths" placeholder="e.g. 85" min="0" max="100" />
+        <span class="error-msg" id="errMaths"></span>
+      </div>
+      <div class="field-group">
+        <label>Science (0–100)</label>
+        <input type="number" id="inputScience" placeholder="e.g. 78" min="0" max="100" />
+        <span class="error-msg" id="errScience"></span>
+      </div>
+      <div class="field-group">
+        <label>English (0–100)</label>
+        <input type="number" id="inputEnglish" placeholder="e.g. 92" min="0" max="100" />
+        <span class="error-msg" id="errEnglish"></span>
+      </div>
+      <div class="field-group">
+        <label>History (0–100)</label>
+        <input type="number" id="inputHistory" placeholder="e.g. 70" min="0" max="100" />
+        <span class="error-msg" id="errHistory"></span>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addStudent()">+ Add Student</button>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+    <div class="table-header">
+      <p class="table-title">📋 Student Records</p>
+      <input
+        type="text"
+        class="search-input"
+        id="searchInput"
+        placeholder="🔍 Search student..."
+        oninput="renderTable()"
+      />
+    </div>
+    <div id="tableWrapper"></div>
+  </div>
+
+</div>
+
+<script>
+  // ── Data ──
+  let students = [
+    { id: 1, name: 'Priya Sharma',   marks: { Maths: 92, Science: 88, English: 95, History: 80 } },
+    { id: 2, name: 'Rahul Mehta',    marks: { Maths: 74, Science: 68, English: 72, History: 65 } },
+    { id: 3, name: 'Anjali Nair',    marks: { Maths: 55, Science: 60, English: 58, History: 62 } },
+    { id: 4, name: 'Vikram Singh',   marks: { Maths: 40, Science: 35, English: 45, History: 38 } },
+  ]
+
+  let editingId = null
+  let nextId = 5
+
+  // ── Helpers ──
+  function getAverage(marks) {
+    const vals = Object.values(marks)
+    return (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1)
+  }
+
+  function getGrade(avg) {
+    if (avg >= 90) return { label: 'A', cls: 'grade-a' }
+    if (avg >= 75) return { label: 'B', cls: 'grade-b' }
+    if (avg >= 60) return { label: 'C', cls: 'grade-c' }
+    if (avg >= 45) return { label: 'D', cls: 'grade-d' }
+    return { label: 'F', cls: 'grade-f' }
+  }
+
+  function getBarColor(avg) {
+    if (avg >= 75) return '#2ecc71'
+    if (avg >= 50) return '#f39c12'
+    return '#e74c3c'
+  }
+
+  function getTopPerformer() {
+    if (!students.length) return null
+    return students.reduce((top, s) =>
+      parseFloat(getAverage(s.marks)) > parseFloat(getAverage(top.marks)) ? s : top
+    )
+  }
+
+  // ── Validation ──
+  function validateInputs() {
+    let valid = true
+
+    const name = document.getElementById('inputName').value.trim()
+    const maths = document.getElementById('inputMaths').value
+    const science = document.getElementById('inputScience').value
+    const english = document.getElementById('inputEnglish').value
+    const history = document.getElementById('inputHistory').value
+
+    document.getElementById('errName').textContent = ''
+    document.getElementById('errMaths').textContent = ''
+    document.getElementById('errScience').textContent = ''
+    document.getElementById('errEnglish').textContent = ''
+    document.getElementById('errHistory').textContent = ''
+
+    document.getElementById('inputName').classList.remove('error')
+    document.getElementById('inputMaths').classList.remove('error')
+    document.getElementById('inputScience').classList.remove('error')
+    document.getElementById('inputEnglish').classList.remove('error')
+    document.getElementById('inputHistory').classList.remove('error')
+
+    if (!name) {
+      document.getElementById('errName').textContent = 'Name is required.'
+      document.getElementById('inputName').classList.add('error')
+      valid = false
+    }
+
+    ;[['inputMaths', 'errMaths'], ['inputScience', 'errScience'],
+      ['inputEnglish', 'errEnglish'], ['inputHistory', 'errHistory']].forEach(([inputId, errId]) => {
+      const val = document.getElementById(inputId).value
+      if (val === '') {
+        document.getElementById(errId).textContent = 'Required.'
+        document.getElementById(inputId).classList.add('error')
+        valid = false
+      } else if (val < 0 || val > 100) {
+        document.getElementById(errId).textContent = '0–100 only.'
+        document.getElementById(inputId).classList.add('error')
+        valid = false
+      }
+    })
+
+    return valid
+  }
+
+  // ── Add Student ──
+  function addStudent() {
+    if (!validateInputs()) return
+
+    const student = {
+      id: nextId++,
+      name: document.getElementById('inputName').value.trim(),
+      marks: {
+        Maths:   parseInt(document.getElementById('inputMaths').value),
+        Science: parseInt(document.getElementById('inputScience').value),
+        English: parseInt(document.getElementById('inputEnglish').value),
+        History: parseInt(document.getElementById('inputHistory').value),
+      }
+    }
+
+    students.push(student)
+
+    // Clear inputs
+    ;['inputName','inputMaths','inputScience','inputEnglish','inputHistory']
+      .forEach(id => document.getElementById(id).value = '')
+
+    renderAll()
+  }
+
+  // ── Delete ──
+  function deleteStudent(id) {
+    students = students.filter(s => s.id !== id)
+    if (editingId === id) editingId = null
+    renderAll()
+  }
+
+  // ── Edit ──
+  function startEdit(id) {
+    editingId = id
+    renderTable()
+  }
+
+  function cancelEdit() {
+    editingId = null
+    renderTable()
+  }
+
+  function saveEdit(id) {
+    const subjects = ['Maths', 'Science', 'English', 'History']
+    const student = students.find(s => s.id === id)
+    let valid = true
+
+    subjects.forEach(sub => {
+      const val = parseInt(document.getElementById(`edit-${sub}-${id}`).value)
+      if (isNaN(val) || val < 0 || val > 100) {
+        alert(`${sub} must be between 0 and 100.`)
+        valid = false
+      }
+    })
+
+    if (!valid) return
+
+    subjects.forEach(sub => {
+      student.marks[sub] = parseInt(document.getElementById(`edit-${sub}-${id}`).value)
+    })
+
+    editingId = null
+    renderAll()
+  }
+
+  // ── Render Stats ──
+  function renderStats() {
+    const total = students.length
+    const top = getTopPerformer()
+    const classAvg = total
+      ? (students.reduce((sum, s) => sum + parseFloat(getAverage(s.marks)), 0) / total).toFixed(1)
+      : '—'
+    const passing = students.filter(s => parseFloat(getAverage(s.marks)) >= 45).length
+
+    document.getElementById('statTotal').textContent = total
+    document.getElementById('statAvg').textContent = total ? classAvg : '—'
+    document.getElementById('statTop').textContent = top ? top.name.split(' ')[0] : '—'
+    document.getElementById('statPass').textContent = passing
+  }
+
+  // ── Render Table ──
+  function renderTable() {
+    const search = document.getElementById('searchInput').value.toLowerCase()
+    const filtered = students.filter(s => s.name.toLowerCase().includes(search))
+    const topId = getTopPerformer()?.id
+
+    const wrapper = document.getElementById('tableWrapper')
+
+    if (!filtered.length) {
+      wrapper.innerHTML = `
+        <div class="empty-state">
+          <span>🎓</span>
+          <p>${students.length ? 'No student matches your search.' : 'No students yet. Add one above!'}</p>
+        </div>`
+      return
+    }
+
+    const subjects = ['Maths', 'Science', 'English', 'History']
+
+    const rows = filtered.map(s => {
+      const avg = getAverage(s.marks)
+      const grade = getGrade(parseFloat(avg))
+      const barColor = getBarColor(parseFloat(avg))
+      const isTop = s.id === topId
+      const isEditing = s.id === editingId
+
+      const markCells = subjects.map(sub => {
+        if (isEditing) {
+          return `<td><input class="edit-input" type="number" id="edit-${sub}-${s.id}" value="${s.marks[sub]}" min="0" max="100"/></td>`
+        }
+        return `<td>${s.marks[sub]}</td>`
+      }).join('')
+
+      const actions = isEditing
+        ? `<div class="action-btns">
+            <button class="save-btn" onclick="saveEdit(${s.id})">💾 Save</button>
+            <button class="cancel-btn" onclick="cancelEdit()">✕ Cancel</button>
+           </div>`
+        : `<div class="action-btns">
+            <button class="edit-btn" onclick="startEdit(${s.id})">✏️ Edit</button>
+            <button class="delete-btn" onclick="deleteStudent(${s.id})">🗑️</button>
+           </div>`
+
+      return `
+        <tr class="${isTop ? 'top-row' : ''}">
+          <td>
+            <strong>${s.name}</strong>
+            ${isTop ? '<span class="top-badge">🏆 Top</span>' : ''}
+          </td>
+          ${markCells}
+          <td>
+            <div class="avg-bar-bg">
+              <div class="avg-bar-fill" style="width:${avg}%;background:${barColor}"></div>
+            </div>
+            <strong>${avg}</strong>
+          </td>
+          <td><span class="grade ${grade.cls}">${grade.label}</span></td>
+          <td>${actions}</td>
+        </tr>`
+    }).join('')
+
+    wrapper.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Student</th>
+            ${subjects.map(s => `<th>${s}</th>`).join('')}
+            <th>Average</th>
+            <th>Grade</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`
+  }
+
+  function renderAll() {
+    renderStats()
+    renderTable()
+  }
+
+  // Initial render
+  renderAll()
+</script>
+</body>
+</html>
+```
+

@@ -1,0 +1,18 @@
+{
+  "name": "folder-architect",
+  "version": "1.0.0",
+  "description": "A CLI tool to generate folder structures based on user input",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "figlet": "^1.7.0",
+    "inquirer": "^9.2.15"
+  },
+  "keywords": ["cli", "folder", "generator", "structure"],
+  "author": "",
+  "license": "ISC"
+}

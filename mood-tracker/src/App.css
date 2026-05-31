@@ -1,0 +1,237 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea22, #764ba222);
+}
+
+/* ── Wrapper ── */
+.app-wrapper {
+  min-height: 100vh;
+  padding: 36px 20px;
+  transition: background 0.5s;
+}
+
+.app-container {
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+/* ── Header ── */
+.app-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.app-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+
+.app-subtitle {
+  font-size: 14px;
+  color: #888;
+  margin-top: 6px;
+}
+
+/* ── Mood Selector ── */
+.mood-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.mood-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 10px;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.mood-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.mood-btn.selected {
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.mood-emoji {
+  font-size: 32px;
+}
+
+.mood-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: inherit;
+}
+
+.mood-btn.selected .mood-label {
+  color: #fff;
+}
+
+/* ── Mood Display ── */
+.mood-display {
+  text-align: center;
+  padding: 28px;
+  border-radius: 16px;
+  border: 2px solid;
+  margin-bottom: 24px;
+  transition: all 0.3s;
+}
+
+.mood-display-emoji {
+  font-size: 56px;
+  margin-bottom: 10px;
+}
+
+.mood-display-label {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.mood-display-quote {
+  font-size: 15px;
+  color: #555;
+  font-style: italic;
+}
+
+/* ── Streak Row ── */
+.streak-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.streak-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.streak-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+
+.streak-label {
+  font-size: 11px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Section Title ── */
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 14px;
+}
+
+/* ── Chart ── */
+.chart-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+/* ── History ── */
+.history-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  margin-bottom: 40px;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.clear-btn {
+  padding: 6px 14px;
+  background: #fee;
+  color: #e74c3c;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #f8f9fb;
+  border-radius: 10px;
+  border-left: 4px solid;
+}
+
+.history-emoji {
+  font-size: 22px;
+}
+
+.history-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-mood {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.history-quote {
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
+}
+
+.history-time {
+  font-size: 11px;
+  color: #bbb;
+  white-space: nowrap;
+}

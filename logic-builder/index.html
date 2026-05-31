@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Logic Builder — Number Guessing Game</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #fff;
+    }
+
+    .header h1 { font-size: 30px; font-weight: 800; }
+    .header p  { font-size: 13px; opacity: 0.6; margin-top: 6px; }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+    }
+
+    /* ── Difficulty Screen ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .difficulty-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1a1a2e;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .difficulty-subtitle {
+      font-size: 13px;
+      color: #999;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .difficulty-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .diff-btn {
+      padding: 18px 24px;
+      border: 2.5px solid #e0e0e0;
+      border-radius: 14px;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .diff-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+    .diff-btn.easy:hover   { border-color: #2ecc71; background: #eafaf1; }
+    .diff-btn.medium:hover { border-color: #f39c12; background: #fef9e7; }
+    .diff-btn.hard:hover   { border-color: #e74c3c; background: #fdedec; }
+
+    .diff-left { display: flex; align-items: center; gap: 12px; }
+    .diff-icon { font-size: 28px; }
+    .diff-name { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+    .diff-desc { font-size: 12px; color: #999; margin-top: 2px; }
+    .diff-badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .easy   .diff-badge { background: #eafaf1; color: #2ecc71; }
+    .medium .diff-badge { background: #fef9e7; color: #f39c12; }
+    .hard   .diff-badge { background: #fdedec; color: #e74c3c; }
+
+    /* ── Game Screen ── */
+    .game-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .game-badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 20px;
+    }
+
+    .badge-easy   { background: #eafaf1; color: #2ecc71; }
+    .badge-medium { background: #fef9e7; color: #f39c12; }
+    .badge-hard   { background: #fdedec; color: #e74c3c; }
+
+    .game-score {
+      font-size: 13px;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .game-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+    }
+
+    .game-subtitle {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 20px;
+    }
+
+    /* ── Lives ── */
+    .lives-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .lives-label { font-size: 13px; color: #888; font-weight: 600; }
+    .hearts { display: flex; gap: 4px; }
+    .heart { font-size: 20px; transition: all 0.3s; }
+    .heart.lost { filter: grayscale(1); opacity: 0.3; }
+
+    /* ── Attempts Bar ── */
+    .attempts-bar-bg {
+      background: #f0f0f0;
+      border-radius: 10px;
+      height: 8px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .attempts-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.3s, background 0.3s;
+    }
+
+    /* ── Input ── */
+    .guess-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .guess-input {
+      flex: 1;
+      padding: 14px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .guess-input:focus { border-color: #667eea; }
+
+    .guess-btn {
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .guess-btn:hover { opacity: 0.9; }
+    .guess-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Feedback ── */
+    .feedback {
+      text-align: center;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .feedback.too-high { background: #fdedec; color: #e74c3c; }
+    .feedback.too-low  { background: #eaf4fb; color: #3498db; }
+    .feedback.correct  { background: #eafaf1; color: #2ecc71; }
+    .feedback.game-over{ background: #fdedec; color: #e74c3c; }
+    .feedback.default  { background: #f8f9fb; color: #999; }
+
+    /* ── History ── */
+    .history-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #bbb;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .history-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-height: 30px;
+    }
+
+    .chip {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .chip.high { background: #fdedec; color: #e74c3c; }
+    .chip.low  { background: #eaf4fb; color: #3498db; }
+    .chip.win  { background: #eafaf1; color: #2ecc71; }
+
+    /* ── Result Screen ── */
+    .result-icon  { font-size: 64px; text-align: center; margin-bottom: 16px; }
+    .result-title { font-size: 26px; font-weight: 800; color: #1a1a2e; text-align: center; margin-bottom: 8px; }
+    .result-msg   { font-size: 14px; color: #888; text-align: center; margin-bottom: 24px; }
+
+    .result-stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .result-stat {
+      flex: 1;
+      background: #f8f9fb;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .result-stat-value { font-size: 24px; font-weight: 800; color: #667eea; display: block; }
+    .result-stat-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.4px; }
+
+    .play-again-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .change-diff-btn {
+      width: 100%;
+      padding: 12px;
+      background: #f0f2f5;
+      color: #555;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ── Leaderboard ── */
+    .leaderboard-card {
+      background: rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 20px 24px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .lb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .lb-title { font-size: 15px; font-weight: 700; color: #fff; }
+    .lb-clear  {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .lb-empty { color: rgba(255,255,255,0.3); font-size: 13px; text-align: center; padding: 10px 0; }
+
+    .lb-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .lb-item:last-child { border-bottom: none; }
+    .lb-rank  { font-size: 16px; width: 24px; text-align: center; }
+    .lb-info  { flex: 1; }
+    .lb-name  { font-size: 13px; font-weight: 700; color: #fff; }
+    .lb-meta  { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+    .lb-score {
+      font-size: 15px;
+      font-weight: 800;
+      color: #667eea;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🎮 Logic Builder</h1>
+    <p>Guess the number — test your logic!</p>
+  </div>
+
+  <!-- Main Card -->
+  <div class="card">
+
+    <!-- Screen 1: Difficulty -->
+    <div class="screen active" id="screenDifficulty">
+      <p class="difficulty-title">Choose Difficulty</p>
+      <p class="difficulty-subtitle">Pick a level to start the game</p>
+      <div class="difficulty-grid">
+        <button class="diff-btn easy" onclick="startGame('easy')">
+          <div class="diff-left">
+            <span class="diff-icon">🟢</span>
+            <div>
+              <div class="diff-name">Easy</div>
+              <div class="diff-desc">1–50 · 10 attempts</div>
+            </div>
+          </div>
+          <span class="diff-badge">Beginner</span>
+        </button>
+        <button class="diff-btn medium" onclick="startGame('medium')">
+          <div class="diff-left">
+            <span class="diff-icon">🟡</span>
+            <div>
+              <div class="diff-name">Medium</div>
+              <div class="diff-desc">1–100 · 7 attempts</div>
+            </div>
+          </div>
+          <span class="diff-badge">Normal</span>
+        </button>
+        <button class="diff-btn hard" onclick="startGame('hard')">
+          <div class="diff-left">
+            <span class="diff-icon">🔴</span>
+            <div>
+              <div class="diff-name">Hard</div>
+              <div class="diff-desc">1–200 · 5 attempts</div>
+            </div>
+          </div>
+          <span class="diff-badge">Expert</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Screen 2: Game -->
+    <div class="screen" id="screenGame">
+      <div class="game-top">
+        <span class="game-badge" id="gameBadge">Easy</span>
+        <span class="game-score" id="gameScore">Score: 0</span>
+      </div>
+
+      <p class="game-title" id="gameTitle">Guess the number!</p>
+      <p class="game-subtitle" id="gameSubtitle">Between 1 and 50</p>
+
+      <!-- Lives -->
+      <div class="lives-row">
+        <span class="lives-label">Lives:</span>
+        <div class="hearts" id="heartsRow"></div>
+      </div>
+
+      <!-- Attempts Bar -->
+      <div class="attempts-bar-bg">
+        <div class="attempts-bar-fill" id="attemptsBar" style="width:100%;background:#2ecc71"></div>
+      </div>
+
+      <!-- Input -->
+      <div class="guess-row">
+        <input
+          type="number"
+          class="guess-input"
+          id="guessInput"
+          placeholder="?"
+        />
+        <button class="guess-btn" id="guessBtn" onclick="makeGuess()">Guess 🎯</button>
+      </div>
+
+      <!-- Feedback -->
+      <div class="feedback default" id="feedback">Enter your guess and click Guess!</div>
+
+      <!-- History -->
+      <div style="margin-top:16px">
+        <p class="history-title">Previous Guesses</p>
+        <div class="history-chips" id="historyChips"></div>
+      </div>
+    </div>
+
+    <!-- Screen 3: Result -->
+    <div class="screen" id="screenResult">
+      <div class="result-icon" id="resultIcon">🎉</div>
+      <p class="result-title" id="resultTitle">You Won!</p>
+      <p class="result-msg" id="resultMsg">Great job!</p>
+      <div class="result-stats">
+        <div class="result-stat">
+          <span class="result-stat-value" id="resultAttempts">—</span>
+          <span class="result-stat-label">Attempts Used</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-stat-value" id="resultScore">—</span>
+          <span class="result-stat-label">Score Earned</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-stat-value" id="resultNumber">—</span>
+          <span class="result-stat-label">The Number</span>
+        </div>
+      </div>
+      <button class="play-again-btn" onclick="playAgain()">🔄 Play Again (Same Difficulty)</button>
+      <button class="change-diff-btn" onclick="showDifficulty()">🎚️ Change Difficulty</button>
+    </div>
+
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="leaderboard-card">
+    <div class="lb-header">
+      <span class="lb-title">🏆 Leaderboard</span>
+      <button class="lb-clear" onclick="clearLeaderboard()">Clear</button>
+    </div>
+    <div id="leaderboard"></div>
+  </div>
+
+</div>
+
+<script>
+  // ── Config ──
+  const DIFFICULTIES = {
+    easy:   { label: 'Easy',   max: 50,  attempts: 10, badgeClass: 'badge-easy',   multiplier: 1 },
+    medium: { label: 'Medium', max: 100, attempts: 7,  badgeClass: 'badge-medium', multiplier: 2 },
+    hard:   { label: 'Hard',   max: 200, attempts: 5,  badgeClass: 'badge-hard',   multiplier: 3 },
+  }
+
+  // ── State ──
+  let secretNumber, currentDifficulty, maxAttempts
+  let attemptsLeft, guessHistory, totalScore
+  let leaderboard = []
+
+  // ── Utility Functions ──
+  function getRandomNumber(max) {
+    return Math.floor(Math.random() * max) + 1
+  }
+
+  function calculateScore(attemptsUsed, maxAttempts, multiplier) {
+    const base = 1000
+    const penalty = attemptsUsed * 80
+    return Math.max(0, Math.round((base - penalty) * multiplier))
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
+    document.getElementById(id).classList.add('active')
+  }
+
+  // ── Render Hearts ──
+  function renderHearts() {
+    const config = DIFFICULTIES[currentDifficulty]
+    const total = config.attempts
+    let html = ''
+    for (let i = 0; i < total; i++) {
+      const lost = i >= attemptsLeft
+      html += `<span class="heart ${lost ? 'lost' : ''}">❤️</span>`
+    }
+    document.getElementById('heartsRow').innerHTML = html
+  }
+
+  // ── Render Attempts Bar ──
+  function renderBar() {
+    const config = DIFFICULTIES[currentDifficulty]
+    const pct = (attemptsLeft / config.attempts) * 100
+    const color = pct > 60 ? '#2ecc71' : pct > 30 ? '#f39c12' : '#e74c3c'
+    const bar = document.getElementById('attemptsBar')
+    bar.style.width = pct + '%'
+    bar.style.background = color
+  }
+
+  // ── Start Game ──
+  function startGame(difficulty) {
+    currentDifficulty = difficulty
+    const config = DIFFICULTIES[difficulty]
+
+    secretNumber   = getRandomNumber(config.max)
+    maxAttempts    = config.attempts
+    attemptsLeft   = config.attempts
+    guessHistory   = []
+    totalScore     = 0
+
+    // Update UI
+    const badge = document.getElementById('gameBadge')
+    badge.textContent = config.label
+    badge.className = 'game-badge ' + config.badgeClass
+
+    document.getElementById('gameTitle').textContent   = 'Guess the number!'
+    document.getElementById('gameSubtitle').textContent = `Between 1 and ${config.max}`
+    document.getElementById('gameScore').textContent   = 'Score: 0'
+    document.getElementById('guessInput').value        = ''
+    document.getElementById('guessInput').disabled     = false
+    document.getElementById('guessBtn').disabled       = false
+    document.getElementById('historyChips').innerHTML  = ''
+    document.getElementById('feedback').textContent    = 'Enter your guess and click Guess!'
+    document.getElementById('feedback').className      = 'feedback default'
+
+    renderHearts()
+    renderBar()
+    showScreen('screenGame')
+    document.getElementById('guessInput').focus()
+  }
+
+  // ── Make Guess ──
+  function makeGuess() {
+    const input = document.getElementById('guessInput')
+    const config = DIFFICULTIES[currentDifficulty]
+    const guess = parseInt(input.value)
+
+    // Validate
+    if (isNaN(guess) || guess < 1 || guess > config.max) {
+      setFeedback(`⚠️ Please enter a number between 1 and ${config.max}`, 'default')
+      return
+    }
+
+    if (guessHistory.includes(guess)) {
+      setFeedback(`⚠️ You already guessed ${guess}! Try a different number.`, 'default')
+      return
+    }
+
+    attemptsLeft--
+    guessHistory.push(guess)
+
+    // Add chip
+    addChip(guess, guess > secretNumber ? 'high' : guess < secretNumber ? 'low' : 'win')
+    renderHearts()
+    renderBar()
+    input.value = ''
+
+    if (guess === secretNumber) {
+      handleWin()
+    } else if (attemptsLeft === 0) {
+      handleLoss()
+    } else {
+      if (guess > secretNumber) {
+        setFeedback(`📉 Too High! Try a lower number.`, 'too-high')
+      } else {
+        setFeedback(`📈 Too Low! Try a higher number.`, 'too-low')
+      }
+      document.getElementById('gameSubtitle').textContent =
+        `${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining`
+    }
+  }
+
+  // ── Win ──
+  function handleWin() {
+    const attemptsUsed = DIFFICULTIES[currentDifficulty].attempts - attemptsLeft
+    const config = DIFFICULTIES[currentDifficulty]
+    const score = calculateScore(attemptsUsed, config.attempts, config.multiplier)
+
+    setFeedback(`🎉 Correct! The number was ${secretNumber}!`, 'correct')
+    document.getElementById('guessInput').disabled = true
+    document.getElementById('guessBtn').disabled   = true
+
+    // Add to leaderboard
+    leaderboard.push({
+      difficulty: config.label,
+      number: secretNumber,
+      attempts: attemptsUsed,
+      maxAttempts: config.attempts,
+      score,
+    })
+    leaderboard.sort((a, b) => b.score - a.score)
+    leaderboard = leaderboard.slice(0, 5)
+
+    showResult(true, attemptsUsed, score)
+  }
+
+  // ── Loss ──
+  function handleLoss() {
+    setFeedback(`💀 Game Over! The number was ${secretNumber}.`, 'game-over')
+    document.getElementById('guessInput').disabled = true
+    document.getElementById('guessBtn').disabled   = true
+    showResult(false, DIFFICULTIES[currentDifficulty].attempts, 0)
+  }
+
+  // ── Show Result Screen ──
+  function showResult(won, attemptsUsed, score) {
+    setTimeout(() => {
+      document.getElementById('resultIcon').textContent  = won ? '🎉' : '💀'
+      document.getElementById('resultTitle').textContent = won ? 'You Won! 🏆' : 'Game Over!'
+      document.getElementById('resultMsg').textContent   = won
+        ? `You guessed it in ${attemptsUsed} attempt${attemptsUsed !== 1 ? 's' : ''}!`
+        : `The number was ${secretNumber}. Better luck next time!`
+      document.getElementById('resultAttempts').textContent = attemptsUsed
+      document.getElementById('resultScore').textContent    = score
+      document.getElementById('resultNumber').textContent   = secretNumber
+      renderLeaderboard()
+      showScreen('screenResult')
+    }, 1000)
+  }
+
+  // ── Helpers ──
+  function setFeedback(msg, type) {
+    const el = document.getElementById('feedback')
+    el.textContent = msg
+    el.className = 'feedback ' + type
+  }
+
+  function addChip(guess, type) {
+    const chip = document.createElement('span')
+    chip.className = `chip ${type}`
+    chip.textContent = guess
+    document.getElementById('historyChips').appendChild(chip)
+  }
+
+  // ── Leaderboard ──
+  function renderLeaderboard() {
+    const el = document.getElementById('leaderboard')
+    if (!leaderboard.length) {
+      el.innerHTML = '<p class="lb-empty">No scores yet. Play a game!</p>'
+      return
+    }
+    const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣']
+    el.innerHTML = leaderboard.map((entry, i) => `
+      <div class="lb-item">
+        <span class="lb-rank">${medals[i]}</span>
+        <div class="lb-info">
+          <div class="lb-name">${entry.difficulty} · #${entry.number}</div>
+          <div class="lb-meta">${entry.attempts} / ${entry.maxAttempts} attempts used</div>
+        </div>
+        <span class="lb-score">${entry.score}</span>
+      </div>
+    `).join('')
+  }
+
+  function clearLeaderboard() {
+    leaderboard = []
+    renderLeaderboard()
+  }
+
+  // ── Navigation ──
+  function playAgain()      { startGame(currentDifficulty) }
+  function showDifficulty() { showScreen('screenDifficulty') }
+
+  // Allow pressing Enter to guess
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const gameScreen = document.getElementById('screenGame')
+      if (gameScreen.classList.contains('active')) makeGuess()
+    }
+  })
+
+  // Initial leaderboard render
+  renderLeaderboard()
+</script>
+</body>
+</html>
